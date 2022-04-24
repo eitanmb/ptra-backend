@@ -1,34 +1,29 @@
 const jwt = require('jsonwebtoken');
 
-const validarJwt = ( req, res=response, next ) => {
-
-    const token = req.header('x-token');
-
-    if(!token) {
-        res.status(400).json({
-            ok:false,
-            msg:'No se ha recibido token'
-        });
+const validarJwt = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.sendStatus(401);
     }
+    console.log(authHeader);
+    // remove Bearer if using Bearer Authorization mechanism
+    let token;
+    if (authHeader.toLowerCase().startsWith('bearer')) {
+        token = authHeader.slice('bearer'.length).trim();
+    }
+    else {
+        token = authHeader;
+    }
+    jwt.verify(token, process.env.SECRET_SEED, (err, decoded) => {
+        if (err) {
+            return res.sendStatus(403);
+        }
 
-    try {
-        const { uid, firstName } = jwt.verify( token, process.env.SECRET_SEED);
-    
-        //AGREGAR EL UID Y EL FIRSTNAME AL REQUEST
         req.uid = uid;
         req.firstName = firstName;
-
-    } catch (error) {
-       console.log(error);
-       return res.status(401).json({
-           ok:false,
-           msg: 'El token no es válido'
-       });
-    }
-
-    next();
-
-}
+        next();
+    });
+};
 
 
 module.exports = validarJwt;

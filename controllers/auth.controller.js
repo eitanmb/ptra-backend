@@ -2,7 +2,7 @@ const { response } = require('express');
 const User = require('../models/Users.model');
 const bcryptjs = require('bcryptjs');
 const generateJWT = require('../helpers/jwt');
-const googleVerify = require('../helpers/google-verify');
+const googleVerify = require('../helpers/googleVerify');
 
 //Controllers: createUser, getUsers, updateUser, deleteUser, loginUserByEmail, loginByGoogle, renewJWT
 const loginByEmail = async(req, res=response) => {
@@ -31,15 +31,20 @@ const loginByEmail = async(req, res=response) => {
             });
         }
 
-        //generar JWT
-        const token = await generateJWT( user._id, user.firstName );
+        // Create accesToken and refreshToken
+        const accesToken = await generateJWT( user._id, user.firstName, '15s' );
+        const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
 
+        //Sending the refreshToken
+        res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+        
+        //Sending the accessToken to the frontend developer
         res.json({
             ok:true,
             msg:'Login by email',
             uid: user._id,
             name: user.firstName,
-            token
+            accesToken
         });
 
     } catch (error) {
@@ -80,15 +85,19 @@ const googleSignIn = async(req, res=response) => {
             });
         }
 
-        //generar JWT
-        const token = await generateJWT( user._id, user.firstName );
-
+         // Create accesToken and refreshToken
+         const accesToken = await generateJWT( user._id, user.firstName, '15s' );
+         const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
+ 
+         //Sending the refreshToken
+         res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+         
         res.json({
             ok:true,
             msg:'Login by Gmail',
             uid: user._id,
             name: user.firstName,
-            token
+            accesToken
         });
 
     } catch (error) {
@@ -108,12 +117,17 @@ const renewJWT = async(req, res=response) => {
         const { uid, firstName:name } = req;
         console.log(uid, name);
         
-        //renovar jwt del usuario
-        const token = await generateJWT( uid, name );
+         // Create accesToken and refreshToken
+         const accesToken = await generateJWT( user._id, user.firstName, '15s' );
+         const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
+ 
+         //Sending the refreshToken
+         res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+         
         
         res.json({
             ok: true,
-            token,
+            accesToken,
             uid,
             name
         });
