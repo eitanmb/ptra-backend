@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PETRA</title>
+</head>
+<body>
+
+    <h1>Google Sign-in</h1>
+
+      
+    <div id="g_id_onload"
+    data-client_id="530979520896-gbpbtflhsv37jf256apoeeothhnc2ns4.apps.googleusercontent.com"
+    data-callback="handleCredentialResponse"
+    data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+      data-type="standard"
+      data-size="large"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-shape="rectangular"
+      data-logo_alignment="left">
+        </div>
+        
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <script>
+     
+        async function handleCredentialResponse(response) {
+
+            const body = { id_token: response.credential };
+
+            try {
+
+                const resp = await fetch( "http://localhost:8080/api/auth/google", {
+                    method:'POST',
+                    headers: {
+                        'Content-type':'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                
+                console.log( await resp.json() );
+                
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+    </script>
+
+
+</body>
+</html>
