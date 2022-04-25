@@ -29,7 +29,7 @@ const createDeployTokens = async( user, res ) => {
      const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
 
      //Sending the refreshToken
-     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+     res.cookie('jwt', refreshToken, { httpOnly: true, secure: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
 
      //Actualizar refreshToken del usuiario en la db
      await updateUserRefreshToken( user, refreshToken );
