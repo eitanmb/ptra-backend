@@ -5,39 +5,6 @@ const generateJWT = require('../helpers/jwt');
 const bcryptjs = require('bcryptjs');
 
 //Controllers: createUser, getUsers, updateUser, deleteUser, loginUserByEmail, loginByGoogle, renewJWT
-const newUser = async( req, res=response ) => {
-
-        try {
-
-            const { password } = req.body;
-           
-            const user = new User( req.body );
-
-            //encryptar contraseña
-            user.password = encriptarPassword( password );
-
-            //registrar nuevo usuario en db
-            await user.save();
-
-            //Crear el JWT
-            const token = await generateJWT( user._id, user.firstName, '15s' );
-            
-            return res.status(201).json({
-                ok:true,
-                user,
-                token
-            });
-
-            
-        } catch (error) {
-            return res.status(400).json({
-                ok:false,
-                msg: 'No pudo registrarse el usuario. Comuníquese con el administrador'
-            });
-        }
-
-}
-
 const getUser = async( req, res=response ) => {
 
     const {  userId } = req.params;
@@ -177,7 +144,6 @@ const changeUserPassword = async( req, res=response ) => {
 }
 
 module.exports = {
-    newUser,
     getUser,
     getUsers,
     updateUserProfile,

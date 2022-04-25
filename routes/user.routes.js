@@ -2,7 +2,6 @@ const { Router } = require( 'express' );
 const { check } = require('express-validator');
 
 const { 
-    newUser,
     getUser,
     getUsers,
     updateUserProfile,
@@ -17,20 +16,6 @@ const validarJwt = require('../middlewares/validarJwt');
  
 
 const router = Router();
-
-//CREAR NUEVO USUARIOError
-router.post(
-    '/new', 
-    [ 
-        check(['firstName','lastName','email'],'Este campo es obligatorio').not().isEmpty(),
-        check('email','No es un email válido').isEmail(),
-        check('email').custom(emailExist),
-        check('password', 'La contraseña debe tener al menos 6 caracteres').isLength({ min:6 }),
-        check('confirmPassword').custom(passwordMatched),
-        validarCampos
-    ],
-    newUser 
-);
 
 //OBTENER DATO DE UN USUARIO ESPECÍFICO
 router.get(

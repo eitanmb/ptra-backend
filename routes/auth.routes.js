@@ -4,15 +4,31 @@ const { check } = require('express-validator');
 const { 
     loginByEmail,
     googleSignIn,
+    newUser,
     renewJWT
  } = require('../controllers/auth.controller');
 
- const validarCampos = require('../middlewares/validarCampos');
+const validarCampos = require('../middlewares/validarCampos');
 const validarJwt = require('../middlewares/validarJwt');
- 
+
+const { emailExist, passwordMatched } = require('../helpers/dbValidators');
+
  
 const router = Router();
 
+//CREAR NUEVO USUARIOError
+router.post(
+    '/new', 
+    [ 
+        check(['firstName','lastName','email'],'Este campo es obligatorio').not().isEmpty(),
+        check('email','No es un email válido').isEmail(),
+        check('email').custom(emailExist),
+        check('password', 'La contraseña debe tener al menos 6 caracteres').isLength({ min:6 }),
+        check('confirmPassword').custom(passwordMatched),
+        validarCampos
+    ],
+    newUser 
+);
 
 router.post(
     '/', 
@@ -32,6 +48,7 @@ router.post(
     ],
     googleSignIn 
 );
+
 
 router.get('/renew', validarJwt, renewJWT );
 
