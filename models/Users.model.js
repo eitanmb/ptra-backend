@@ -26,17 +26,21 @@ const UserSchema = new Schema( {
     status: {
         type: Boolean,
         default: true
-
     },
     rol : {
         type: String,
         default: 'USER_FREE',
-        enum: ['USER_FREE', 'USER_PAID'],
+        enum: ['USER_FREE', 'USER_PAID', 'ADMIN'],
         required: true
     },
     google: {
         type: Boolean,
         default: false
+    },
+    refreshToken: {
+        type: String,
+        default: "",
+        require: true
     }
 });
 
@@ -45,6 +49,5 @@ UserSchema.methods.toJSON = function() {
     user.uid = _id;
     return user;
 }
-
 
 module.exports = model('User', UserSchema );
