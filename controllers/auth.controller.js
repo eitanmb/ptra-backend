@@ -1,9 +1,11 @@
 const { response } = require('express');
 const User = require('../models/Users.model');
 const bcryptjs = require('bcryptjs');
-const { createDeployTokens } = require('../helpers/jwt');
+const { createDeployTokens, generateJWT } = require('../helpers/jwt');
 const googleVerify = require('../helpers/googleVerify');
-const { createNewUser } = require('../database/db.operations');
+const { createNewUser, findUserByRefreshToken } = require('../database/db.operations');
+const jwt = require('jsonwebtoken');
+
 
 
 const newUser = async( req, res=response ) => {
@@ -130,16 +132,42 @@ const googleSignIn = async(req, res=response) => {
 }
 
 
-const newAccessTokenFromRefreshToken = ( req, res ) => {
+const renovarToken = async( req, res=response ) => {
 
-    console.log( req.cookies );
+    const cookies = req.cookies;
+
+    if(!cookies?.jwt ) {
+        res.sendStatus(403);
+    }
+
+    const refreshToken = cookies.jwt;
+
+    const user = await findUserByRefreshToken(refreshToken);
+    
+    if (!user ) res.sendStatus(403);
+
+    jwt.verify(refreshToken, process.env.SECRET_SEED, 
+        
+        async(err, decoded) => {
+
+            if (err || user.firstName !== decoded.firstName ) {
+                
+                res.sendStatus(403);
+            }
+
+            const accessToken = await generateJWT( decoded.uid, decoded.firstName, '15s' );
+            
+            res.status(201).json({
+                accessToken
+            });
+        }
+    );
 
 }
-
 
 module.exports = {
     loginByEmail,
     googleSignIn,
     newUser,
-    newAccessTokenFromRefreshToken
+    renovarToken
 }

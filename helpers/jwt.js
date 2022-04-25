@@ -1,3 +1,4 @@
+const res = require('express/lib/response');
 const jwt = require('jsonwebtoken');
 const { updateUserRefreshToken } = require('../database/db.operations');
 
@@ -32,7 +33,7 @@ const createDeployTokens = async( user, res ) => {
      res.cookie('jwt', refreshToken, { httpOnly: true, secure: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
 
      //Actualizar refreshToken del usuiario en la db
-     await updateUserRefreshToken( user, refreshToken );
+     updateUserRefreshToken( user, refreshToken );
 
      return {
         accessToken,
@@ -40,6 +41,7 @@ const createDeployTokens = async( user, res ) => {
      }
 
 }
+
 
 
 module.exports = {

@@ -25,8 +25,15 @@ const updateUserRefreshToken = async( user, refreshToken ) => {
 
 }
 
+const findUserByRefreshToken = ( refreshToken ) => {
+
+    return User.findOne({ refreshToken: refreshToken })
+
+}
+
 
 module.exports = { 
     createNewUser,
-    updateUserRefreshToken
+    updateUserRefreshToken,
+    findUserByRefreshToken
 }

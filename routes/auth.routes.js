@@ -5,11 +5,10 @@ const {
     loginByEmail,
     googleSignIn,
     newUser,
-    newAccessTokenFromRefreshToken
+    renovarToken
  } = require('../controllers/auth.controller');
 
 const validarCampos = require('../middlewares/validarCampos');
-const validarJwt = require('../middlewares/validarJwt');
 
 const { emailExist, passwordMatched } = require('../helpers/dbValidators');
 
@@ -51,7 +50,7 @@ router.post(
 
 router.get(
     '/refresh', 
-    newAccessTokenFromRefreshToken
+    renovarToken
 );
 
 module.exports = router;
