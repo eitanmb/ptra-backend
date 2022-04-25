@@ -1,9 +1,9 @@
 const { response } = require('express');
 const User = require('../models/Users.model');
 const bcryptjs = require('bcryptjs');
-const { generateJWT } = require('../helpers/jwt');
+const { generateJWT, createDeployTokens } = require('../helpers/jwt');
 const googleVerify = require('../helpers/googleVerify');
-const {createNewUser, updateUserRefreshToken} = require('../database/db.operations');
+const { createNewUser } = require('../database/db.operations');
 
 
 const newUser = async( req, res=response ) => {
@@ -13,16 +13,8 @@ const newUser = async( req, res=response ) => {
         //registrar nuevo usuario en db
         const user = await createNewUser( req.body );
 
-        // Create accesToken and refreshToken
-        const accessToken = await generateJWT( user._id, user.firstName, '15s' );
-        const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
-
-        //Actualizar refreshToken del usuiario en la db
-        updateUserRefreshToken( user, refreshToken );
-
-        //Sending the refreshToken
-        res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
-
+        //Crear Tokens
+        const { accessToken } = await createDeployTokens( user, res );
         
         return res.status(201).json({
             ok:true,
@@ -66,15 +58,8 @@ const loginByEmail = async(req, res=response) => {
             });
         }
 
-        // Create accesToken and refreshToken
-        const accesToken = await generateJWT( user._id, user.firstName, '15s' );
-        const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
-
-        //Actualizar refreshToken del usuiario en la db
-        updateUserRefreshToken( user, refreshToken );
-
-        //Sending the refreshToken
-        res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+        //Crear Tokens
+        const { accessToken } = await createDeployTokens( user, res );
         
         //Sending the accessToken to the frontend developer
         res.json({
@@ -82,7 +67,7 @@ const loginByEmail = async(req, res=response) => {
             msg:'Login by email',
             uid: user._id,
             name: user.firstName,
-            accesToken
+            accessToken
         });
 
     } catch (error) {
@@ -123,22 +108,15 @@ const googleSignIn = async(req, res=response) => {
             });
         }
 
-        // Create accesToken and refreshToken
-        const accesToken = await generateJWT( user._id, user.firstName, '15s' );
-        const refreshToken = await generateJWT( user._id, user.firstName, '1d' );
-
-        //Actualizar refreshToken del usuiario en la db
-        updateUserRefreshToken( user, refreshToken );
-
-        //Sending the refreshToken
-        res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+        //Crear Tokens
+        const { accessToken } = await createDeployTokens( user, res );
          
         res.json({
             ok:true,
             msg:'Login by Gmail',
             uid: user._id,
             name: user.firstName,
-            accesToken
+            accessToken
         });
 
     } catch (error) {
