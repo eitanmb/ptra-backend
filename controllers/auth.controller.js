@@ -130,8 +130,16 @@ const googleSignIn = async(req, res=response) => {
 }
 
 
+const newAccessTokenFromRefreshToken = ( req, res ) => {
+
+    console.log( req.cookies );
+
+}
+
+
 module.exports = {
     loginByEmail,
     googleSignIn,
-    newUser
+    newUser,
+    newAccessTokenFromRefreshToken
 }

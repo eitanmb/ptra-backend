@@ -4,7 +4,8 @@ const { check } = require('express-validator');
 const { 
     loginByEmail,
     googleSignIn,
-    newUser
+    newUser,
+    newAccessTokenFromRefreshToken
  } = require('../controllers/auth.controller');
 
 const validarCampos = require('../middlewares/validarCampos');
@@ -48,5 +49,9 @@ router.post(
     googleSignIn 
 );
 
+router.get(
+    '/refresh', 
+    newAccessTokenFromRefreshToken
+);
 
 module.exports = router;

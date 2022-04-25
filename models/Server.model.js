@@ -2,6 +2,7 @@ const cors = require('cors');
 const express = require('express');
 const { use } = require('../routes/auth.routes');
 const dbConnection = require('../database/config.db');
+const cookieParser = require('cookie-parser');
 
 class Server {
 
@@ -35,6 +36,9 @@ class Server {
 
             //lectura Parseo Json
             this.app.use( express.json() );
+
+            //Cookie parser
+            this.app.use( cookieParser() );
         }
 
         //rutas
