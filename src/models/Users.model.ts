@@ -1,5 +1,5 @@
-const { Schema, model } = require('mongoose');
-
+import { Schema, model, Model } from 'mongoose';
+import { IUser } from '../types/types';
 
 const UserSchema = new Schema( {
     firstName: {
@@ -35,7 +35,8 @@ const UserSchema = new Schema( {
     },
     google: {
         type: Boolean,
-        default: false
+        default: false,
+        require: true
     },
     refreshToken: {
         type: String,
@@ -50,4 +51,4 @@ UserSchema.methods.toJSON = function() {
     return user;
 }
 
-module.exports = model('User', UserSchema );
+export const User: Model<IUser> = model('User', UserSchema);

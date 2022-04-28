@@ -1,8 +1,9 @@
-const User = require('../models/Users.model');
-const encriptarPassword = require('../helpers/encriptarPassword');
+import User from '../models/Users.model';
+import encriptarPassword from '../helpers/encriptarPassword';
+import mongoose from 'mongoose';
+import { IUser } from '../types/types';
 
-
-const createNewUser = async( userInfo ) => {
+export const createNewUser = async( userInfo:IUser ) => {
     
     const { password } = userInfo;
     const user = new User( userInfo );
@@ -17,7 +18,7 @@ const createNewUser = async( userInfo ) => {
 
 }
 
-const updateUserRefreshToken = async( user, refreshToken ) => {
+export const updateUserRefreshToken = async( user, refreshToken:string ) => {
 
     //Actualizar refreshToken del usuiario en la db
     user.refreshToken = refreshToken;     
@@ -25,15 +26,8 @@ const updateUserRefreshToken = async( user, refreshToken ) => {
 
 }
 
-const findUserByRefreshToken = ( refreshToken ) => {
+export const findUserByRefreshToken = ( refreshToken:string ) => {
 
     return User.findOne({ refreshToken: refreshToken })
 
-}
-
-
-module.exports = { 
-    createNewUser,
-    updateUserRefreshToken,
-    findUserByRefreshToken
 }

@@ -1,6 +1,6 @@
-const bcryptjs = require('bcryptjs');
+import bcryptjs from 'bcryptjs';
 
-const encriptarPassword = ( password ) => {
+const encriptarPassword = ( password:string ) => {
 
     const salt = bcryptjs.genSaltSync(); 
     
@@ -8,4 +8,4 @@ const encriptarPassword = ( password ) => {
 }
 
 
-module.exports = encriptarPassword;
+export default encriptarPassword;

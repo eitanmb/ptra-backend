@@ -1,6 +1,6 @@
-const User = require("../models/Users.model")
-const bcryptjs = require('bcryptjs');
-
+import bcryptjs from 'bcryptjs';
+import {User} from "../models/Users.model";
+import express from 'express';
 
 
 const emailExist = async( email='' ) => {
@@ -18,7 +18,7 @@ const isActiveUser = async( userId='' ) => {
     //Determinar si el usuario está activo
     const isActive = await User.findById( userId );
         
-    if(!isActive.status) {
+    if(!isActive?.status) {
         throw new Error(`El usuario con id ${ userId } no existe`); 
     }
     
@@ -29,27 +29,31 @@ const isGoogleUser = async( userId='') => {
     const isGoogle = await User.findById( userId );
 
     //verifica que el usuario no se haya registrado a través de google
-    if( isGoogle.google ) { 
+    if( isGoogle?.google ) { 
         throw new Error(`El usuario con id ${ userId } se registro a través de Google`); 
     }
 
 }
 
-const havePriviledges = async( userId, { req }) => {
+const havePriviledges = async( userId:string, { req }:{ req:express.Request } ) => {
 
     //determinar si el usuario logeado es el mismo que quiere cambiar su profile o si tiene rol de administrador
-    const user = await User.findById( req.uid );
+    try {
+        const user = await User.findById( req.uid );
 
-    if (user.rol === "ADMIN" ) {
-        console.log('Es administrador');
+        if (user.rol === "ADMIN" ) {
+    
+            console.log('Es administrador');
+            return true;
+        }
+    
+        if( req.uid !== userId ){
+            throw new Error('El usuario no tiene privilegios');
+        }
+    
         return true;
     }
 
-    if( req.uid !== userId ){
-        throw new Error('El usuario no tiene privilegios');
-    }
-
-    return true;
 
 }
 

@@ -1,19 +1,19 @@
-const { response } = require('express');
-const User = require('../models/Users.model');
-const bcryptjs = require('bcryptjs');
-const { createDeployTokens, generateJWT } = require('../helpers/jwt');
-const googleVerify = require('../helpers/googleVerify');
-const { createNewUser, findUserByRefreshToken } = require('../database/db.operations');
-const jwt = require('jsonwebtoken');
+import bcryptjs from 'bcryptjs';
+import { createDeployTokens, generateJWT } from '../helpers/jwt';
+import googleVerify from '../helpers/googleVerify';
+import { createNewUser, findUserByRefreshToken } from '../database/db.operations';
+import jwt from 'jsonwebtoken';
+import express from 'express';
+import { IUser } from '../types/types';
+import {User} from '../models/Users.model';
 
 
-
-const newUser = async( req, res=response ) => {
+export const newUser = async( req: express.Request, res:express.Response ) => {
 
     try {
 
         //registrar nuevo usuario en db
-        const user = await createNewUser( req.body );
+        const user:IUser = await createNewUser( req.body );
 
         //Crear Tokens
         const { accessToken } = await createDeployTokens( user, res );
@@ -34,7 +34,7 @@ const newUser = async( req, res=response ) => {
 
 }
 
-const loginByEmail = async(req, res=response) => {
+export const loginByEmail = async( req:express.Request, res:express.Response ) => {
 
     const { email, password } = req.body;
 
@@ -78,7 +78,7 @@ const loginByEmail = async(req, res=response) => {
     
 }
 
-const googleSignIn = async(req, res=response) => {
+export const googleSignIn = async( req:express.Request, res:express.Response ) => {
 
     const { id_token } = req.body;
 
@@ -132,7 +132,7 @@ const googleSignIn = async(req, res=response) => {
 }
 
 
-const renovarToken = async( req, res=response ) => {
+export const renovarToken = async( req:express.Request, res:express.Response ) => {
 
     const cookies = req.cookies;
 
@@ -146,9 +146,9 @@ const renovarToken = async( req, res=response ) => {
     
     if (!user ) res.sendStatus(403);
 
-    jwt.verify(refreshToken, process.env.SECRET_SEED, 
+    jwt.verify(refreshToken, process.env.SECRET_SEED as any, 
         
-        async(err, decoded) => {
+        async(err:any, decoded:any ) => {
 
             if (err || user.firstName !== decoded.firstName ) {
                 
@@ -163,11 +163,4 @@ const renovarToken = async( req, res=response ) => {
         }
     );
 
-}
-
-module.exports = {
-    loginByEmail,
-    googleSignIn,
-    newUser,
-    renovarToken
 }

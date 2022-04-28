@@ -1,12 +1,33 @@
-const cors = require('cors');
-const express = require('express');
-const { use } = require('../routes/auth.routes');
-const dbConnection = require('../database/config.db');
-const cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
 
-class Server {
+import  { dbConnection}  from '../database/config.db';
+import { options } from '../middlewares/corsConfig';
 
-        constructor() {
+interface IServer {
+    app: express.Application,
+    port: string | undefined,
+    paths: {
+        auth: string,
+        user: string
+    }
+    ptraConnection: () => void,
+    middlewares: () => void,
+    routes: () => void,
+    listen: () => void
+
+
+}
+
+export class Server implements IServer{
+        
+        public app;
+        public port;
+        public paths;
+       
+
+        constructor( ) {
 
             this.app = express();
             this.port = process.env.PORT;
@@ -29,7 +50,7 @@ class Server {
         //Midlewares
         middlewares() {
             //CORS
-            this.app.use( cors() );
+            this.app.use( cors(options) );
 
             //carpeta publica
             this.app.use( express.static('public') );
@@ -56,6 +77,3 @@ class Server {
         }
 
 }
-
-
-module.exports = Server;
