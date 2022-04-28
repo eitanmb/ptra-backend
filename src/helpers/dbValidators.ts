@@ -1,9 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import {User} from "../models/Users.model";
-import express from 'express';
 
-
-const emailExist = async( email='' ) => {
+export const emailExist = async( email='' ) => {
     
     const existEmail = await User.findOne( { email } );
 
@@ -13,7 +11,7 @@ const emailExist = async( email='' ) => {
     }
 }
 
-const isActiveUser = async( userId='' ) => {
+export const isActiveUser = async( userId='' ) => {
     
     //Determinar si el usuario está activo
     const isActive = await User.findById( userId );
@@ -24,7 +22,7 @@ const isActiveUser = async( userId='' ) => {
     
 }
 
-const isGoogleUser = async( userId='') => {
+export const isGoogleUser = async( userId='') => {
     
     const isGoogle = await User.findById( userId );
 
@@ -35,30 +33,29 @@ const isGoogleUser = async( userId='') => {
 
 }
 
-const havePriviledges = async( userId:string, { req }:{ req:express.Request } ) => {
+export const havePriviledges = async( userId:string, { req }:{ req:any } ) => {
 
     //determinar si el usuario logeado es el mismo que quiere cambiar su profile o si tiene rol de administrador
-    try {
-        const user = await User.findById( req.uid );
+    const user:any = await User.findById( req.uid );
 
-        if (user.rol === "ADMIN" ) {
-    
-            console.log('Es administrador');
-            return true;
-        }
-    
-        if( req.uid !== userId ){
-            throw new Error('El usuario no tiene privilegios');
-        }
-    
+    if (!user) throw new Error('El usuario no existe');
+
+    if (user.rol === "ADMIN" ) {
+
+        console.log('Es administrador');
         return true;
     }
 
+    if( req.uid !== userId ){
+        throw new Error('El usuario no tiene privilegios');
+    }
+
+    return true;
 
 }
 
 
-const passwordMatched = ( confirmPassword, { req } ) => {
+export const passwordMatched = ( confirmPassword:string, { req }:{ req:any } ) => {
 
     if (confirmPassword !== req.body.password) {
       throw new Error('Las claves no coinciden');
@@ -69,12 +66,12 @@ const passwordMatched = ( confirmPassword, { req } ) => {
 }
 
 
-const currentPasswordMatch = async( currentPassword, { req } ) => {
+export const currentPasswordMatch = async( currentPassword:string, { req }:{ req:any } ) => {
     
     const { userId } = req.params;
 
     //Determinar si el usuario está activo
-    const user = await User.findById(userId);
+    const user:any = await User.findById(userId);
 
      //verficar si el currentPassword enviado por el usuario a través del formulario
     const validPassword = bcryptjs.compareSync( currentPassword, user.password );
@@ -82,18 +79,4 @@ const currentPasswordMatch = async( currentPassword, { req } ) => {
     if( !validPassword ) {
         throw new Error('Las claves no coinciden');
     }
-}
-
-
-
-
-
-
-module.exports = {
-    emailExist,
-    isActiveUser,
-    isGoogleUser,
-    havePriviledges,
-    passwordMatched,
-    currentPasswordMatch
 }
