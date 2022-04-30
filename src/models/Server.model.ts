@@ -7,7 +7,8 @@ import { options } from '../middlewares/corsConfig';
 
 interface IServer {
     app: express.Application,
-    port: string | undefined,
+    PORT: string | undefined,
+    PTRA_CNN: string | undefined,
     paths: {
         auth: string,
         user: string
@@ -22,15 +23,16 @@ interface IServer {
 
 export class Server implements IServer{
         
-        public app;
-        public port;
-        public paths;
-       
+        public app: express.Application;
+        public PORT: string | undefined;
+        public paths: { auth: string, user: string };
+        public PTRA_CNN: string | undefined;
 
-        constructor( ) {
+        constructor() {
 
             this.app = express();
-            this.port = process.env.PORT;
+            this.PORT = process.env.PORT;
+            this.PTRA_CNN = process.env.PTRA_CNN;
             this.paths = {
                 auth: '/api/auth',
                 user: '/api/user'
@@ -44,11 +46,14 @@ export class Server implements IServer{
 
         //Ptra DB connection
         async ptraConnection() {
-            await dbConnection( process.env.PTRA_CNN );
+            if(!this.PTRA_CNN ) {
+                process.exit(1);
+            }
+            await dbConnection( this.PTRA_CNN );
         }
 
         //Midlewares
-        middlewares() {
+        middlewares(): void {
             //CORS
             this.app.use( cors(options) );
 
@@ -63,16 +68,16 @@ export class Server implements IServer{
         }
 
         //rutas
-        routes() {
+        routes(): void {
 
             this.app.use( this.paths.auth, require('../routes/auth.routes'));
             this.app.use( this.paths.user, require('../routes/user.routes'));
         }
 
-        listen() {
+        listen(): void {
 
-            this.app.listen( this.port, () => {
-                console.log(`Escuchando el puerto ${ this.port }`);
+            this.app.listen( this.PORT, () => {
+                console.log(`Escuchando el puerto ${ this.PORT }`);
             });
         }
 

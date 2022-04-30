@@ -1,13 +1,12 @@
 import {User} from '../models/Users.model';
 import encriptarPassword from '../helpers/encriptarPassword';
-import mongoose from 'mongoose';
 import { IUser } from '../types/types';
 
 export const createNewUser = async( userInfo:IUser ) => {
     
     const { password } = userInfo;
     const user = new User( userInfo );
-
+    
     //encryptar contraseña
     user.password = encriptarPassword( password );
 
@@ -18,7 +17,7 @@ export const createNewUser = async( userInfo:IUser ) => {
 
 }
 
-export const updateUserRefreshToken = async( user: any, refreshToken:string ) => {
+export const updateUserRefreshToken = async( user: IUser, refreshToken:string ) => {
 
     //Actualizar refreshToken del usuiario en la db
     user.refreshToken = refreshToken;     

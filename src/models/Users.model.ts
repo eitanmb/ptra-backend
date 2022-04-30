@@ -1,4 +1,4 @@
-import { Schema, model, Model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IUser } from '../types/types';
 
 const UserSchema = new Schema( {
@@ -51,4 +51,4 @@ UserSchema.methods.toJSON = function() {
     return user;
 }
 
-export const User: Model<IUser> = model('User', UserSchema);
+export const User = model<IUser>('User', UserSchema);
