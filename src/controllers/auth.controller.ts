@@ -143,12 +143,12 @@ export const renovarToken = async( req:express.Request, res:express.Response ) =
     const refreshToken = cookies.jwt;
 
     const user = await findUserByRefreshToken(refreshToken);
-    
-    if (!user ) res.sendStatus(403);
 
     jwt.verify(refreshToken, process.env.SECRET_SEED as any, 
         
         async(err:any, decoded:any ) => {
+
+            if (!user) return res.sendStatus(403);
 
             if (err || user.firstName !== decoded.firstName ) {
                 
