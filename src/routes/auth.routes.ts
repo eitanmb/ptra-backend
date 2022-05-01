@@ -1,16 +1,16 @@
-const { Router } = require( 'express' );
-const { check } = require('express-validator');
+import { Router } from 'express';
+import { check,CustomValidator } from 'express-validator';
 
-const { 
+import { 
     loginByEmail,
     googleSignIn,
     newUser,
     renovarToken
- } = require('../controllers/auth.controller');
+ }  from '../controllers/auth.controller';
 
-const validarCampos = require('../middlewares/validarCampos');
+import validarCampos from '../middlewares/validarCampos';
 
-const { emailExist, passwordMatched } = require('../helpers/dbValidators');
+import { emailExist, passwordMatched } from '../helpers/dbValidators';
 
  
 const router = Router();
@@ -53,4 +53,4 @@ router.get(
     renovarToken
 );
 
-module.exports = router;
+export default router;

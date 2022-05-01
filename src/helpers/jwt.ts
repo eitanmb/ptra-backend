@@ -1,4 +1,3 @@
-const res = require('express/lib/response');
 import jwt from 'jsonwebtoken';
 import { updateUserRefreshToken } from '../database/db.operations';
 import { IUser } from '../types/types';
@@ -9,16 +8,24 @@ interface ITokens {
     refreshToken: string | undefined
 }
 
+interface ITokenPayload {
+    uid: string,
+    firstName: string
+}
+
+const SECRET_SEED: string | undefined = process.env.SECRET_SEED;
 
 export const generateJWT = ( uid='', firstName='', exp='15s'): Promise<string | undefined> => {
 
     return new Promise( (resolve, reject) => {
         
-        const payload = { uid, firstName };
+        const payload:ITokenPayload = { uid, firstName };
 
-        jwt.sign( payload, process.env.SECRET_SEED || "", {
+        if(!SECRET_SEED) throw new Error("La clave privada no existe");
+
+        jwt.sign( payload, SECRET_SEED, {
             expiresIn:exp
-        }, ( error, token:string|undefined ) => {
+        }, ( error, token ) => {
             if(error) {
                 console.log(error);
                 reject('No pudo generarse el token');
@@ -37,13 +44,32 @@ export const createDeployTokens = async function( user:IUser, res:express.Respon
      const refreshToken:string | undefined = await generateJWT( user._id, user.firstName, '1d' );
 
      //Sending the refreshToken
+     if(!refreshToken) throw new Error("No existe el Token");
      res.cookie('jwt', refreshToken, { httpOnly: true, secure: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
 
      //Actualizar refreshToken del usuiario en la db
-     updateUserRefreshToken( user, refreshToken as string );
+     updateUserRefreshToken( user, refreshToken );
+
+     if(!accessToken) throw new Error("No existe el Token");
 
      return {
         accessToken,
         refreshToken
      }
 }
+
+export const verificarToken = function( token: string ): Promise<ITokenPayload> {
+
+    if(!SECRET_SEED) throw new Error("La clave privada no existe");
+
+    return new Promise((resolve, reject) => {
+        jwt.verify( token, SECRET_SEED, (err, decoded:any ) => {
+            
+            if (err) return reject(err);
+
+            resolve(decoded);
+          }
+        )
+    });
+}
+

@@ -1,18 +1,18 @@
-const { Router } = require( 'express' );
-const { check } = require('express-validator');
+import { Router } from 'express';
+import { check } from 'express-validator';
 
-const { 
+import { 
     getUser,
     getUsers,
     updateUserProfile,
     changeUserPassword,
     deleteUser
-} = require('../controllers/user.controller');
+} from '../controllers/user.controller';
 
-const { emailExist, passwordMatched, isActiveUser, currentPasswordMatch, havePriviledges, isGoogleUser } = require('../helpers/dbValidators');
-const isAdmin = require('../middlewares/isAdmin');
-const validarCampos = require('../middlewares/validarCampos');
-const validarJwt = require('../middlewares/validarJwt');
+import { passwordMatched, isActiveUser, currentPasswordMatch, havePriviledges, isGoogleUser } from '../helpers/dbValidators';
+import isAdmin from '../middlewares/isAdmin';
+import validarCampos from '../middlewares/validarCampos';
+import validarJwt from '../middlewares/validarJwt';
  
 
 const router = Router();
@@ -84,4 +84,4 @@ router.delete(
  );
 
 
-module.exports = router;
+export default router;

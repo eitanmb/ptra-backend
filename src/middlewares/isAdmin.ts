@@ -1,10 +1,11 @@
-const { response } = require("express");
-const User = require("../models/Users.model");
+import express from "express";
+import { User } from "../models/Users.model";
 
-
-const isAdmin = async( req, res=response, next ) => {
+const isAdmin = async( req:express.Request, res:express.Response, next: express.NextFunction ) => {
 
     const user = await User.findById( req.uid );
+
+    if(!user) throw new Error("No existe el usuario");
 
     if( user.rol !== "ADMIN" ) {
         res.status(400).json({
@@ -18,4 +19,4 @@ const isAdmin = async( req, res=response, next ) => {
 
 }
 
-module.exports = isAdmin;
+export default isAdmin;

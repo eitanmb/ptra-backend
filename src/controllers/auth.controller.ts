@@ -1,8 +1,7 @@
 import bcryptjs from 'bcryptjs';
-import { createDeployTokens, generateJWT } from '../helpers/jwt';
+import { createDeployTokens, generateJWT, verificarToken } from '../helpers/jwt';
 import googleVerify from '../helpers/googleVerify';
 import { createNewUser, findUserByRefreshToken } from '../database/db.operations';
-import jwt from 'jsonwebtoken';
 import express from 'express';
 import { IUser } from '../types/types';
 import {User} from '../models/Users.model';
@@ -11,7 +10,6 @@ import {User} from '../models/Users.model';
 export const newUser = async( req: express.Request, res:express.Response ) => {
 
     try {
-
         //registrar nuevo usuario en db
         const user:IUser = await createNewUser( req.body );
 
@@ -137,30 +135,29 @@ export const renovarToken = async( req:express.Request, res:express.Response ) =
     const cookies = req.cookies;
 
     if(!cookies?.jwt ) {
-        res.sendStatus(403);
+        return res.sendStatus(403);
     }
 
     const refreshToken = cookies.jwt;
 
-    const user = await findUserByRefreshToken(refreshToken);
+    const user = await findUserByRefreshToken( refreshToken );
 
-    jwt.verify(refreshToken, process.env.SECRET_SEED as any, 
-        
-        async(err:any, decoded:any ) => {
+    if ( !user ) return res.sendStatus(403);
 
-            if (!user) return res.sendStatus(403);
+    
+    try {
+     
+        const decoded = await verificarToken( refreshToken );
 
-            if (err || user.firstName !== decoded.firstName ) {
-                
-                res.sendStatus(403);
-            }
+        if( user.firstName !== decoded.firstName ) throw new Error("Los usarios no coinciden");
 
-            const accessToken = await generateJWT( decoded.uid, decoded.firstName, '15s' );
-            
-            res.status(201).json({
-                accessToken
-            });
-        }
-    );
+        const accessToken = await generateJWT( decoded.uid, decoded.firstName, '15s' );
 
+        res.status(201).json({
+            accessToken
+        });
+
+    } catch(err) {
+        throw new Error("No pudo vericarse el token");
+    }
 }

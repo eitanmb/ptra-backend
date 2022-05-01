@@ -1,11 +1,6 @@
-import jwt from 'jsonwebtoken';
-import express from 'express';
-
-
-const SECRET_SEED: string | undefined = process.env.SECRET_SEED;
-
-
-const validarJwt = (req: express.Request, res:express.Response, next:express.NextFunction ) => {
+"use strict";
+const jwt = require('jsonwebtoken');
+const validarJwt = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
         return res.sendStatus(401);
@@ -19,19 +14,13 @@ const validarJwt = (req: express.Request, res:express.Response, next:express.Nex
     else {
         token = authHeader;
     }
-
-    if(!SECRET_SEED) throw new Error("La clave privada no existe");
-
-    jwt.verify(token, SECRET_SEED, (err: any, decoded:any) => {
+    jwt.verify(token, process.env.SECRET_SEED, (err, decoded) => {
         if (err) {
             return res.sendStatus(403);
         }
-
-        req.uid = decoded.uid;
-        req.firstName = decoded.firstName;
+        req.uid = uid;
+        req.firstName = firstName;
         next();
     });
 };
-
-
-export default validarJwt;
+module.exports = validarJwt;

@@ -1,11 +1,9 @@
-const { response } = require('express');
-const User = require('../models/Users.model');
-const encriptarPassword = require('../helpers/encriptarPassword');
-const generateJWT = require('../helpers/jwt');
-const bcryptjs = require('bcryptjs');
+import { User } from '../models/Users.model';
+import encriptarPassword from '../helpers/encriptarPassword';
+import express from 'express';
 
 //Controllers: createUser, getUsers, updateUser, deleteUser, loginUserByEmail, loginByGoogle, renewJWT
-const getUser = async( req, res=response ) => {
+const getUser = async( req:express.Request, res:express.Response ) => {
 
     const {  userId } = req.params;
 
@@ -30,7 +28,7 @@ const getUser = async( req, res=response ) => {
 };
 
 
-const getUsers = async(req, res=response) => {
+const getUsers = async( req:express.Request, res:express.Response ) => {
 
     //Solo el administrador debe poder acceder al listado de usuarios
     //A través del JWT, podemos acceder al ID del usuario que está logueado
@@ -56,7 +54,7 @@ const getUsers = async(req, res=response) => {
 }
 
 
-const updateUserProfile = async(req, res=response) => {
+const updateUserProfile = async(req:express.Request, res:express.Response) => {
 
     const {  userId } = req.params;
 
@@ -82,7 +80,7 @@ const updateUserProfile = async(req, res=response) => {
     
 }
 
-const deleteUser = async(req, res=response) => {
+const deleteUser = async(req:express.Request, res:express.Response) => {
 
     //determinar con el JWT si el usuario logeado es el mismo que quiere darse de baja
     const {  userId } = req.params;
@@ -109,7 +107,7 @@ const deleteUser = async(req, res=response) => {
 }
 
 
-const changeUserPassword = async( req, res=response ) => {
+const changeUserPassword = async( req:express.Request, res:express.Response ) => {
 
     //determinar con el JWT si el usuario logeado es el mismo que quiere cambiar su password    
     const { userId } = req.params;
@@ -143,7 +141,7 @@ const changeUserPassword = async( req, res=response ) => {
    
 }
 
-module.exports = {
+export {
     getUser,
     getUsers,
     updateUserProfile,
