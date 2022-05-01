@@ -1,3 +1,5 @@
 node_modules/
 .env
 TODOS.md
+private.pem
+public.pem

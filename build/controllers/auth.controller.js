@@ -17,7 +17,6 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jwt_1 = require("../helpers/jwt");
 const googleVerify_1 = __importDefault(require("../helpers/googleVerify"));
 const db_operations_1 = require("../database/db.operations");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Users_model_1 = require("../models/Users.model");
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -118,20 +117,23 @@ exports.googleSignIn = googleSignIn;
 const renovarToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const cookies = req.cookies;
     if (!(cookies === null || cookies === void 0 ? void 0 : cookies.jwt)) {
-        res.sendStatus(403);
+        return res.sendStatus(403);
     }
     const refreshToken = cookies.jwt;
     const user = yield (0, db_operations_1.findUserByRefreshToken)(refreshToken);
-    jsonwebtoken_1.default.verify(refreshToken, process.env.SECRET_SEED, (err, decoded) => __awaiter(void 0, void 0, void 0, function* () {
-        if (!user)
-            return res.sendStatus(403);
-        if (err || user.firstName !== decoded.firstName) {
-            res.sendStatus(403);
-        }
+    if (!user)
+        return res.sendStatus(403);
+    try {
+        const decoded = yield (0, jwt_1.verificarToken)(refreshToken);
+        if (user.firstName !== decoded.firstName)
+            throw new Error("Los usarios no coinciden");
         const accessToken = yield (0, jwt_1.generateJWT)(decoded.uid, decoded.firstName, '15s');
         res.status(201).json({
             accessToken
         });
-    }));
+    }
+    catch (err) {
+        throw new Error("No pudo vericarse el token");
+    }
 });
 exports.renovarToken = renovarToken;

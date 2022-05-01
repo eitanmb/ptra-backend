@@ -8,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { response } = require("express");
-const User = require("../models/Users.model");
-const isAdmin = (req, res = response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User.findById(req.uid);
+Object.defineProperty(exports, "__esModule", { value: true });
+const Users_model_1 = require("../models/Users.model");
+const isAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield Users_model_1.User.findById(req.uid);
+    if (!user)
+        throw new Error("No existe el usuario");
     if (user.rol !== "ADMIN") {
         res.status(400).json({
             ok: false,
@@ -22,4 +24,4 @@ const isAdmin = (req, res = response, next) => __awaiter(void 0, void 0, void 0,
         next();
     }
 });
-module.exports = isAdmin;
+exports.default = isAdmin;

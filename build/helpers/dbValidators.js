@@ -17,6 +17,8 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const Users_model_1 = require("../models/Users.model");
 const emailExist = (email = '') => __awaiter(void 0, void 0, void 0, function* () {
     const existEmail = yield Users_model_1.User.findOne({ email });
+    if (!existEmail)
+        throw new Error('No hay usuario con ese email');
     if (existEmail) {
         throw new Error(`El usuario con email ${email}, ya existe`);
     }
@@ -25,15 +27,19 @@ exports.emailExist = emailExist;
 const isActiveUser = (userId = '') => __awaiter(void 0, void 0, void 0, function* () {
     //Determinar si el usuario está activo
     const isActive = yield Users_model_1.User.findById(userId);
-    if (!(isActive === null || isActive === void 0 ? void 0 : isActive.status)) {
+    if (!isActive)
+        throw new Error('No hay usuraio con ese ID');
+    if (!isActive.status) {
         throw new Error(`El usuario con id ${userId} no existe`);
     }
 });
 exports.isActiveUser = isActiveUser;
 const isGoogleUser = (userId = '') => __awaiter(void 0, void 0, void 0, function* () {
     const isGoogle = yield Users_model_1.User.findById(userId);
+    if (!isGoogle)
+        throw new Error('No hay usuraio con ese ID');
     //verifica que el usuario no se haya registrado a través de google
-    if (isGoogle === null || isGoogle === void 0 ? void 0 : isGoogle.google) {
+    if (isGoogle.google) {
         throw new Error(`El usuario con id ${userId} se registro a través de Google`);
     }
 });
@@ -62,9 +68,13 @@ const passwordMatched = (confirmPassword, { req }) => {
 };
 exports.passwordMatched = passwordMatched;
 const currentPasswordMatch = (currentPassword, { req }) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.params)
+        throw new Error("No existe el parametro de request userId");
     const { userId } = req.params;
     //Determinar si el usuario está activo
     const user = yield Users_model_1.User.findById(userId);
+    if (!user)
+        throw new Error("El usuario no existe");
     //verficar si el currentPassword enviado por el usuario a través del formulario
     const validPassword = bcryptjs_1.default.compareSync(currentPassword, user.password);
     if (!validPassword) {

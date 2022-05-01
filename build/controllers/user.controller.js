@@ -8,16 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { response } = require('express');
-const User = require('../models/Users.model');
-const encriptarPassword = require('../helpers/encriptarPassword');
-const generateJWT = require('../helpers/jwt');
-const bcryptjs = require('bcryptjs');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteUser = exports.changeUserPassword = exports.updateUserProfile = exports.getUsers = exports.getUser = void 0;
+const Users_model_1 = require("../models/Users.model");
+const encriptarPassword_1 = __importDefault(require("../helpers/encriptarPassword"));
 //Controllers: createUser, getUsers, updateUser, deleteUser, loginUserByEmail, loginByGoogle, renewJWT
-const getUser = (req, res = response) => __awaiter(void 0, void 0, void 0, function* () {
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
-        const userData = yield User.find({ _id: userId });
+        const userData = yield Users_model_1.User.find({ _id: userId });
         res.status(201).json({
             ok: true,
             userData
@@ -31,13 +33,14 @@ const getUser = (req, res = response) => __awaiter(void 0, void 0, void 0, funct
         });
     }
 });
-const getUsers = (req, res = response) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getUser = getUser;
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Solo el administrador debe poder acceder al listado de usuarios
     //A través del JWT, podemos acceder al ID del usuario que está logueado
     try {
         const [users, totalUsers] = yield Promise.all([
-            yield User.find({ status: true }),
-            yield User.countDocuments({ status: true })
+            yield Users_model_1.User.find({ status: true }),
+            yield Users_model_1.User.countDocuments({ status: true })
         ]);
         return res.json({
             ok: true,
@@ -50,10 +53,11 @@ const getUsers = (req, res = response) => __awaiter(void 0, void 0, void 0, func
         throw new Error('No pudo llevarse a acabo la consulta. Inténtelo más tarde');
     }
 });
-const updateUserProfile = (req, res = response) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getUsers = getUsers;
+const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
-        const userUpdated = yield User.findByIdAndUpdate(userId, req.body);
+        const userUpdated = yield Users_model_1.User.findByIdAndUpdate(userId, req.body);
         return res.status(201).json({
             ok: true,
             msg: 'user updated',
@@ -68,11 +72,12 @@ const updateUserProfile = (req, res = response) => __awaiter(void 0, void 0, voi
         });
     }
 });
-const deleteUser = (req, res = response) => __awaiter(void 0, void 0, void 0, function* () {
+exports.updateUserProfile = updateUserProfile;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //determinar con el JWT si el usuario logeado es el mismo que quiere darse de baja
     const { userId } = req.params;
     try {
-        const userDeleted = yield User.findByIdAndUpdate(userId, { status: false });
+        const userDeleted = yield Users_model_1.User.findByIdAndUpdate(userId, { status: false });
         return res.json({
             ok: true,
             msg: 'user deletd',
@@ -87,15 +92,16 @@ const deleteUser = (req, res = response) => __awaiter(void 0, void 0, void 0, fu
         });
     }
 });
-const changeUserPassword = (req, res = response) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deleteUser = deleteUser;
+const changeUserPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //determinar con el JWT si el usuario logeado es el mismo que quiere cambiar su password    
     const { userId } = req.params;
     const { password } = req.body;
     try {
         // //Determinar si el usuario está activo
-        const user = yield User.findById(userId);
+        const user = yield Users_model_1.User.findById(userId);
         //encryptar nueva contraseña
-        yield User.findByIdAndUpdate(userId, { password: encriptarPassword(password) });
+        yield Users_model_1.User.findByIdAndUpdate(userId, { password: (0, encriptarPassword_1.default)(password) });
         return res.json({
             ok: true,
             user,
@@ -110,10 +116,4 @@ const changeUserPassword = (req, res = response) => __awaiter(void 0, void 0, vo
         });
     }
 });
-module.exports = {
-    getUser,
-    getUsers,
-    updateUserProfile,
-    changeUserPassword,
-    deleteUser
-};
+exports.changeUserPassword = changeUserPassword;

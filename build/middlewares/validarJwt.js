@@ -1,5 +1,10 @@
 "use strict";
-const jwt = require('jsonwebtoken');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const SECRET_SEED = process.env.SECRET_SEED;
 const validarJwt = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
@@ -14,13 +19,15 @@ const validarJwt = (req, res, next) => {
     else {
         token = authHeader;
     }
-    jwt.verify(token, process.env.SECRET_SEED, (err, decoded) => {
+    if (!SECRET_SEED)
+        throw new Error("La clave privada no existe");
+    jsonwebtoken_1.default.verify(token, SECRET_SEED, (err, decoded) => {
         if (err) {
             return res.sendStatus(403);
         }
-        req.uid = uid;
-        req.firstName = firstName;
+        req.uid = decoded.uid;
+        req.firstName = decoded.firstName;
         next();
     });
 };
-module.exports = validarJwt;
+exports.default = validarJwt;

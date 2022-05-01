@@ -1,27 +1,31 @@
 "use strict";
-const { Router } = require('express');
-const { check } = require('express-validator');
-const { loginByEmail, googleSignIn, newUser, renovarToken } = require('../controllers/auth.controller');
-const validarCampos = require('../middlewares/validarCampos');
-const { emailExist, passwordMatched } = require('../helpers/dbValidators');
-const router = Router();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const express_validator_1 = require("express-validator");
+const auth_controller_1 = require("../controllers/auth.controller");
+const validarCampos_1 = __importDefault(require("../middlewares/validarCampos"));
+const dbValidators_1 = require("../helpers/dbValidators");
+const router = (0, express_1.Router)();
 //CREAR NUEVO USUARIOError
 router.post('/new', [
-    check(['firstName', 'lastName', 'email'], 'Este campo es obligatorio').not().isEmpty(),
-    check('email', 'No es un email válido').isEmail(),
-    check('email').custom(emailExist),
-    check('password', 'La contraseña debe tener al menos 6 caracteres').isLength({ min: 6 }),
-    check('confirmPassword').custom(passwordMatched),
-    validarCampos
-], newUser);
+    (0, express_validator_1.check)(['firstName', 'lastName', 'email'], 'Este campo es obligatorio').not().isEmpty(),
+    (0, express_validator_1.check)('email', 'No es un email válido').isEmail(),
+    (0, express_validator_1.check)('email').custom(dbValidators_1.emailExist),
+    (0, express_validator_1.check)('password', 'La contraseña debe tener al menos 6 caracteres').isLength({ min: 6 }),
+    (0, express_validator_1.check)('confirmPassword').custom(dbValidators_1.passwordMatched),
+    validarCampos_1.default
+], auth_controller_1.newUser);
 router.post('/', [
-    check(['email', 'password'], 'No pueden estar vacíos').not().isEmpty(),
-    check(['email'], 'No es un email correcto').isEmail(),
-    validarCampos
-], loginByEmail);
+    (0, express_validator_1.check)(['email', 'password'], 'No pueden estar vacíos').not().isEmpty(),
+    (0, express_validator_1.check)(['email'], 'No es un email correcto').isEmail(),
+    validarCampos_1.default
+], auth_controller_1.loginByEmail);
 router.post('/google', [
-    check('id_token', 'El token debe existir').not().isEmpty(),
-    validarCampos
-], googleSignIn);
-router.get('/refresh', renovarToken);
-module.exports = router;
+    (0, express_validator_1.check)('id_token', 'El token debe existir').not().isEmpty(),
+    validarCampos_1.default
+], auth_controller_1.googleSignIn);
+router.get('/refresh', auth_controller_1.renovarToken);
+exports.default = router;
