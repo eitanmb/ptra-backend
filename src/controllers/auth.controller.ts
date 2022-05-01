@@ -4,7 +4,7 @@ import googleVerify from '../helpers/googleVerify';
 import { createNewUser, findUserByRefreshToken } from '../database/db.operations';
 import express from 'express';
 import { IUser } from '../types/types';
-import {User} from '../models/Users.model';
+import { User } from '../models/Users.model';
 
 
 export const newUser = async( req: express.Request, res:express.Response ) => {
@@ -14,7 +14,10 @@ export const newUser = async( req: express.Request, res:express.Response ) => {
         const user:IUser = await createNewUser( req.body );
 
         //Crear Tokens
-        const { accessToken } = await createDeployTokens( user, res );
+        const tokens = await createDeployTokens( user, res );
+
+        if(!tokens) throw new Error("La operacion de generacion de tokens ha fallado");
+        const { accessToken } = tokens;
         
         return res.status(201).json({
             ok:true,
@@ -59,7 +62,10 @@ export const loginByEmail = async( req:express.Request, res:express.Response ) =
         }
 
         //Crear Tokens
-        const { accessToken } = await createDeployTokens( user, res );
+        const tokens = await createDeployTokens( user, res );
+
+        if(!tokens) throw new Error("La operacion de generacion de tokens ha fallado");
+        const { accessToken } = tokens;
         
         //Sending the accessToken to the frontend developer
         res.json({

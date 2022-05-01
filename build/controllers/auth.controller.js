@@ -23,7 +23,10 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //registrar nuevo usuario en db
         const user = yield (0, db_operations_1.createNewUser)(req.body);
         //Crear Tokens
-        const { accessToken } = yield (0, jwt_1.createDeployTokens)(user, res);
+        const tokens = yield (0, jwt_1.createDeployTokens)(user, res);
+        if (!tokens)
+            throw new Error("La operacion de generacion de tokens ha fallado");
+        const { accessToken } = tokens;
         return res.status(201).json({
             ok: true,
             user,
@@ -58,7 +61,10 @@ const loginByEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         //Crear Tokens
-        const { accessToken } = yield (0, jwt_1.createDeployTokens)(user, res);
+        const tokens = yield (0, jwt_1.createDeployTokens)(user, res);
+        if (!tokens)
+            throw new Error("La operacion de generacion de tokens ha fallado");
+        const { accessToken } = tokens;
         //Sending the accessToken to the frontend developer
         res.json({
             ok: true,
