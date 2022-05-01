@@ -19,6 +19,8 @@ export interface ITokens {
 }
 
 export interface ITokenPayload {
-    uid: string,
-    firstName: string
+    uid?: string,
+    firstName?: string,
+    iat?: number,
+    exp?: number
 }

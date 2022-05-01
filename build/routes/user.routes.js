@@ -52,4 +52,4 @@ router.delete('/delete/:userId', [
     (0, express_validator_1.check)('userId').custom(dbValidators_1.havePriviledges),
     validarCampos_1.default
 ], user_controller_1.deleteUser);
-exports.default = router;
+module.exports = router;

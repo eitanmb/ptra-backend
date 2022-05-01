@@ -63,11 +63,11 @@ export const verificarToken = function( token: string ): Promise<ITokenPayload> 
     if(!SECRET_SEED) throw new Error("La clave privada no existe");
 
     return new Promise((resolve, reject) => {
-        jwt.verify( token, SECRET_SEED, (err, decoded:any ) => {
+        jwt.verify( token, SECRET_SEED, (err, decoded ) => {
             
             if (err) return reject(err);
 
-            resolve(decoded);
+            resolve(<ITokenPayload>decoded);
           }
         )
     });

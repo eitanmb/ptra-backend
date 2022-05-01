@@ -28,4 +28,4 @@ router.post('/google', [
     validarCampos_1.default
 ], auth_controller_1.googleSignIn);
 router.get('/refresh', auth_controller_1.renovarToken);
-exports.default = router;
+module.exports = router;

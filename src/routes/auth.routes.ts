@@ -53,4 +53,4 @@ router.get(
     renovarToken
 );
 
-export default router;
+module.exports = router;
