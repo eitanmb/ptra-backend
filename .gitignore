@@ -3,3 +3,4 @@ node_modules/
 TODOS.md
 private.pem
 public.pem
+.vscode
