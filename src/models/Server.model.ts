@@ -17,8 +17,6 @@ interface IServer {
     middlewares: () => void,
     routes: () => void,
     listen: () => void
-
-
 }
 
 export class Server implements IServer {
