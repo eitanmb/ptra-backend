@@ -1,10 +1,11 @@
 import bcryptjs from 'bcryptjs';
-import { createDeployTokens, generateJWT, verificarToken } from '../helpers/jwt';
-import googleVerify from '../helpers/googleVerify';
-import { createNewUser, findUserByRefreshToken } from '../database/db.operations';
 import express from 'express';
+
+import { createDeployTokens, generateJWT, verificarToken } from '../helpers/jwt';
+import { createNewUser, findUserByRefreshToken } from '../database/db.operations';
 import { IUser } from '../types/types';
 import { User } from '../models/Users.model';
+import googleVerify from '../helpers/googleVerify';
 
 
 export const newUser = async( req: express.Request, res:express.Response ) => {

@@ -1,24 +1,24 @@
-import { Schema, model } from 'mongoose';
 import { IUser } from '../types/types';
+import { Schema, model } from 'mongoose';
 
-const UserSchema = new Schema( {
+const UserSchema = new Schema({
     firstName: {
         type: String,
         required: [true, 'El nombre es requerido']
-    } ,
-    lastName: { 
+    },
+    lastName: {
         type: String,
         required: [true, 'El apellido es requerido']
-    } ,
+    },
     password: {
         type: String,
         required: [true, 'Coloque una clave']
     },
-    email: { 
+    email: {
         type: String,
         required: [true, 'El correo es requerido'],
         unique: true
-    } ,
+    },
     organization: {
         type: String,
         required: false
@@ -27,7 +27,7 @@ const UserSchema = new Schema( {
         type: Boolean,
         default: true
     },
-    rol : {
+    rol: {
         type: String,
         default: 'USER_FREE',
         enum: ['USER_FREE', 'USER_PAID', 'ADMIN'],
@@ -45,7 +45,7 @@ const UserSchema = new Schema( {
     }
 });
 
-UserSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function () {
     const { __v, _id, ...user } = this.toObject();
     user.uid = _id;
     return user;

@@ -1,17 +1,9 @@
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import { updateUserRefreshToken } from '../database/db.operations';
-import { IUser } from '../types/types';
+import { IUser, ITokens } from '../types/types';
 import express from 'express';
 
-interface ITokens {
-    accessToken: string | undefined,
-    refreshToken: string | undefined
-}
 
-interface ITokenPayload {
-    uid: string,
-    firstName: string
-}
 
 const SECRET_SEED: string | undefined = process.env.SECRET_SEED;
 
@@ -19,7 +11,7 @@ export const generateJWT = ( uid='', firstName='', exp='15s'): Promise<string | 
 
     return new Promise( (resolve, reject) => {
         
-        const payload:ITokenPayload = { uid, firstName };
+        const payload:jwt.JwtPayload = { uid, firstName };
 
         if(!SECRET_SEED) throw new Error("La clave privada no existe");
 
@@ -58,7 +50,7 @@ export const createDeployTokens = async function( user:IUser, res:express.Respon
      }
 }
 
-export const verificarToken = function( token: string ): Promise<ITokenPayload> {
+export const verificarToken = function( token: string ): Promise<jwt.JwtPayload> {
 
     if(!SECRET_SEED) throw new Error("La clave privada no existe");
 
@@ -67,7 +59,7 @@ export const verificarToken = function( token: string ): Promise<ITokenPayload> 
             
             if (err) return reject(err);
 
-            resolve(<ITokenPayload>decoded);
+            resolve(<jwt.JwtPayload>decoded);
           }
         )
     });
