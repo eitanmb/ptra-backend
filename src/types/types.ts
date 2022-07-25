@@ -1,5 +1,4 @@
 import { Document } from 'mongoose';
-import { JwtPayload } from 'jsonwebtoken';
 
 
 export interface IUser extends Document {
@@ -18,11 +17,4 @@ export interface IUser extends Document {
 export interface ITokens {
     accessToken: string | undefined,
     refreshToken: string | undefined
-}
-
-export interface ITokenPayload {
-    uid?: string,
-    firstName?: string,
-    iat?: number,
-    exp?: number
 }

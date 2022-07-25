@@ -42,7 +42,6 @@ export class Server implements IServer {
 
     }
 
-    //Ptra DB connection
     async ptraConnection() {
         if (!this.PTRA_CNN) {
             process.exit(1);
@@ -50,22 +49,13 @@ export class Server implements IServer {
         await dbConnection(this.PTRA_CNN);
     }
 
-    //Midlewares
     middlewares(): void {
-        //CORS
         this.app.use(cors(options));
-
-        //carpeta publica
         this.app.use(express.static('public'));
-
-        //lectura Parseo Json
         this.app.use(express.json());
-
-        //Cookie parser
         this.app.use(cookieParser());
     }
 
-    //rutas
     routes(): void {
 
         this.app.use(this.paths.auth, require('../routes/auth.routes'));

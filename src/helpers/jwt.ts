@@ -35,11 +35,9 @@ export const createDeployTokens = async function( user:IUser, res:express.Respon
      const accessToken:string | undefined= await generateJWT( user._id, user.firstName, '15s' );
      const refreshToken:string | undefined = await generateJWT( user._id, user.firstName, '1d' );
 
-     //Sending the refreshToken
      if(!refreshToken) throw new Error("No existe el Token");
      res.cookie('jwt', refreshToken, { httpOnly: true, secure: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
 
-     //Actualizar refreshToken del usuiario en la db
      updateUserRefreshToken( user, refreshToken );
 
      if(!accessToken) throw new Error("No existe el Token");
