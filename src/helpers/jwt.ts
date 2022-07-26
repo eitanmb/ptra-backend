@@ -32,11 +32,11 @@ export const generateJWT = ( uid='', firstName='', exp='15s'): Promise<string | 
 export const createDeployTokens = async function( user:IUser, res:express.Response ): Promise<ITokens> {
 
      // Create accesToken and refreshToken
-     const accessToken:string | undefined= await generateJWT( user._id, user.firstName, '15s' );
+     const accessToken:string | undefined= await generateJWT( user._id, user.firstName, '30s' );
      const refreshToken:string | undefined = await generateJWT( user._id, user.firstName, '1d' );
 
      if(!refreshToken) throw new Error("No existe el Token");
-     res.cookie('jwt', refreshToken, { httpOnly: true, secure: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
+     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: false, maxAge: 24 * 60 * 60 * 1000 });
 
      updateUserRefreshToken( user, refreshToken );
 
@@ -55,8 +55,7 @@ export const verificarToken = function( token: string ): Promise<jwt.JwtPayload>
     return new Promise((resolve, reject) => {
         jwt.verify( token, SECRET_SEED, (err, decoded ) => {
             
-            if (err) return reject(err);
-
+            if (err) reject(err);
             resolve(<jwt.JwtPayload>decoded);
           }
         )

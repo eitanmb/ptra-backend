@@ -6,10 +6,9 @@ const validarJwt = async(req: express.Request, res:express.Response, next:expres
     const authHeader = req.headers['authorization'];
     
     if (!authHeader) {
-        return res.sendStatus(401);
+        return res.sendStatus(403);
     }
     
-    // remove Bearer if using Bearer Authorization mechanism
     let token;
     if (authHeader.toLowerCase().startsWith('bearer')) {
         token = authHeader.slice('bearer'.length).trim();
@@ -22,12 +21,16 @@ const validarJwt = async(req: express.Request, res:express.Response, next:expres
     
     if(!SECRET_SEED) throw new Error("La clave privada no existe");
 
-    const decoded = await verificarToken(token);
-    
-    req.uid = decoded.uid;
-    req.firstName = decoded.firstName;
+    try {
+        const decoded = await verificarToken(token);
+        req.uid = decoded.uid;
+        req.firstName = decoded.firstName;
+        next();
 
-    next();
+    } catch(err) {
+        res.sendStatus(403)
+    }    
+    
 };
 
 

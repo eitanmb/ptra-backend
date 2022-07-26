@@ -39,14 +39,11 @@ export const havePriviledges:CustomValidator = async( userId:string, { req }): P
         return true;
     }
 
-    if( req.uid !== userId ){
-        throw new Error('El usuario no tiene privilegios');
-    }
+    if( req.uid !== userId ) throw new Error('El usuario no tiene privilegios');
 
     return true;
 
 }
-
 
 export const passwordMatched:CustomValidator = ( confirmPassword:string, { req } ):boolean => {
 

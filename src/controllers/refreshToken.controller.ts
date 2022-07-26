@@ -5,6 +5,7 @@ import { findUserByRefreshToken } from '../database/db.operations';
 
 export const refreshToken = async( req:express.Request, res:express.Response ) => {
     const cookies = req.cookies;
+    console.log('cookies', cookies);
 
     if(!cookies?.jwt ) {
         return res.sendStatus(403);
