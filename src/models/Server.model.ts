@@ -2,8 +2,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 
-import { dbConnection } from '../database/config.db';
-import { options } from '../middlewares/corsConfig';
+import { credentials } from '../middlewares/credentials';
+import { dbConnection } from '../config/db';
+import { options } from '../config/corsConfig';
 
 interface IServer {
     app: express.Application,
@@ -65,6 +66,7 @@ export class Server implements IServer {
     }
 
     middlewares(): void {
+        this.app.use(credentials);
         this.app.use(cors(options));
         this.app.use(express.static('public'));
         this.app.use(express.json());
@@ -81,7 +83,6 @@ export class Server implements IServer {
     }
 
     listen(): void {
-
         this.app.listen(this.PORT, () => {
             console.log(`Escuchando el puerto ${this.PORT}`);
         });

@@ -1,5 +1,5 @@
 import * as cors from 'cors';
-
+import { whitelist } from './whitelist';
 
 export const options: cors.CorsOptions = {
     allowedHeaders: [
@@ -11,6 +11,7 @@ export const options: cors.CorsOptions = {
     ],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: 'http://localhost:8080',
     preflightContinue: false,
+    origin: whitelist,
+    optionsSuccessStatus: 200
   };
