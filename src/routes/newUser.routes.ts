@@ -8,7 +8,7 @@ import validarCampos from '../middlewares/validarCampos';
 const router = Router();
 
 router.post(
-    '/new', 
+    '/', 
     [ 
         check(['firstName','lastName','email'],'Este campo es obligatorio').not().isEmpty(),
         check('email','No es un email válido').isEmail(),
@@ -20,3 +20,4 @@ router.post(
     newUser 
 );
 
+module.exports = router;

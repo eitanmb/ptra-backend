@@ -27,5 +27,4 @@ export const newUser = async (req: express.Request, res: express.Response) => {
             msg: 'No pudo registrarse el usuario. Comuníquese con el administrador'
         });
     }
-
 }

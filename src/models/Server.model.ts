@@ -12,9 +12,9 @@ interface IServer {
     paths: {
         auth: string,
         google: string,
-        logout: string,
         register: string,
         renovarToken: string,
+        logout: string,
         user: string
     }
     ptraConnection: () => void,
@@ -27,7 +27,14 @@ export class Server implements IServer {
 
     public app: express.Application;
     public PORT: string | undefined;
-    public paths: { auth: string, google: string, logout: string, register: string, renovarToken: string, user: string };
+    public paths: { 
+        auth: string, 
+        google: string, 
+        register: string, 
+        renovarToken: string, 
+        logout: string, 
+        user: string 
+    };
     public PTRA_CNN: string | undefined;
 
     constructor() {
@@ -38,9 +45,9 @@ export class Server implements IServer {
         this.paths = {
             auth: '/api/auth',
             google: '/api/google',
-            logout: '/api/logout',
             register: '/api/new',
             renovarToken: '/api/renovar',
+            logout: '/api/logout',
             user: '/api/user'
         }
 
@@ -67,9 +74,9 @@ export class Server implements IServer {
     routes(): void {
         this.app.use(this.paths.auth, require('../routes/auth.routes'));
         this.app.use(this.paths.google, require('../routes/googleSignIn.routes'));
-        this.app.use(this.paths.logout, require('../routes/logout.routes'));
         this.app.use(this.paths.register, require('../routes/newUser.routes'));
         this.app.use(this.paths.renovarToken, require('../routes/renovarToken.routes'));
+        this.app.use(this.paths.logout, require('../routes/logout.routes'));
         this.app.use(this.paths.user, require('../routes/user.routes'));
     }
 

@@ -4,6 +4,7 @@ import { renovarToken } from '../controllers/renovarToken.controller';
 const router = Router();
 
 router.get(
-    '/renovar', 
-    renovarToken
+    '/', renovarToken
 );
+
+module.exports = router;
