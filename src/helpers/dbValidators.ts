@@ -1,54 +1,40 @@
 import bcryptjs from 'bcryptjs';
 import {User} from "../models/Users.model";
 import { CustomValidator } from 'express-validator';
+import { IsNumericOptions } from 'express-validator/src/options';
+
+export const isValidUser = async(userId ='') => {
+   return await User.findById( userId );
+}
 
 export const emailExist = async( email='' ) => {
-    
     const existEmail = await User.findOne( { email } );
-
-    // if ( !existEmail ) throw new Error('No hay usuario con ese email'); ESTO ESTÁ MAL IMPLEMENTADO
-
-    if( existEmail ) {
-
-        throw new Error(`El usuario con email ${ email }, ya existe`); 
-    }
+    
+    if( existEmail ) throw new Error(`El usuario con email ${ email }, ya existe`); 
 }
 
 export const isActiveUser = async( userId='' ) => {
-    
-    //Determinar si el usuario está activo
-    const isActive = await User.findById( userId );
+    const isUser = await isValidUser(userId);
 
-    if (!isActive) throw new Error('No hay usuraio con ese ID');
-        
-    if(!isActive.status) {
-        throw new Error(`El usuario con id ${ userId } no existe`); 
+    if (!isUser || !isUser.status) {
+        throw new Error('No hay usuraio con ese ID');
     }
-    
 }
 
 export const isGoogleUser = async( userId='') => {
-    
-    const isGoogle = await User.findById( userId );
+    const isUser = await isValidUser(userId);
 
-    if (!isGoogle) throw new Error('No hay usuraio con ese ID');
-
-    //verifica que el usuario no se haya registrado a través de google
-    if( isGoogle.google ) { 
-        throw new Error(`El usuario con id ${ userId } se registro a través de Google`); 
-    }
-
+    if (!isUser) throw new Error('No hay usuraio con ese ID');
+    if( isUser.google ) throw new Error(`El usuario con id ${ userId } se registro a través de Google`); 
 }
 
 export const havePriviledges:CustomValidator = async( userId:string, { req }): Promise<boolean> => {
 
-    //determinar si el usuario logeado es el mismo que quiere cambiar su profile o si tiene rol de administrador
-    const user = await User.findById( req.uid );
+    const isUser = await isValidUser(req.uid );
 
-    if (!user) throw new Error('El usuario no existe');
+    if (!isUser) throw new Error('El usuario no existe');
 
-    if (user.rol === "ADMIN" ) {
-
+    if (isUser.rol === "ADMIN" ) {
         console.log('Es administrador');
         return true;
     }
@@ -64,11 +50,8 @@ export const havePriviledges:CustomValidator = async( userId:string, { req }): P
 
 export const passwordMatched:CustomValidator = ( confirmPassword:string, { req } ):boolean => {
 
-    if (confirmPassword !== req.body.password) {
-      throw new Error('Las claves no coinciden');
-    }
-
-    // Indicates the success of this synchronous custom validator
+    if (confirmPassword !== req.body.password) throw new Error('Las claves no coinciden');
+    
     return true;
 }
 
