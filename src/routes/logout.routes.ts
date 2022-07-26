@@ -1,19 +1,19 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { auth } from '../controllers/auth.controller';
+import { logout } from '../controllers/logout.controller';
 import validarCampos from '../middlewares/validarCampos';
  
 const router = Router();
 
-router.post(
+router.get(
     '/', 
     [ 
         check(['email', 'password'],'No pueden estar vacíos').not().isEmpty(),
         check(['email'],'No es un email correcto').isEmail(),
         validarCampos
     ],
-    auth
+    logout
 );
 
 module.exports = router;

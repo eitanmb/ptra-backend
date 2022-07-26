@@ -1,19 +1,19 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { auth } from '../controllers/auth.controller';
+import { googleSignIn } from '../controllers/googleSignIn.controller';
 import validarCampos from '../middlewares/validarCampos';
- 
+
 const router = Router();
 
 router.post(
-    '/', 
+    '/google', 
     [ 
-        check(['email', 'password'],'No pueden estar vacíos').not().isEmpty(),
-        check(['email'],'No es un email correcto').isEmail(),
+        check('id_token','El token debe existir').not().isEmpty(),
         validarCampos
     ],
-    auth
+    googleSignIn 
 );
+
 
 module.exports = router;
