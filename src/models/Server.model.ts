@@ -13,7 +13,7 @@ interface IServer {
         auth: string,
         google: string,
         register: string,
-        renovarToken: string,
+        refreshToken: string,
         logout: string,
         user: string
     }
@@ -31,7 +31,7 @@ export class Server implements IServer {
         auth: string, 
         google: string, 
         register: string, 
-        renovarToken: string, 
+        refreshToken: string, 
         logout: string, 
         user: string 
     };
@@ -46,7 +46,7 @@ export class Server implements IServer {
             auth: '/api/auth',
             google: '/api/google',
             register: '/api/new',
-            renovarToken: '/api/renovar',
+            refreshToken: '/api/refresh',
             logout: '/api/logout',
             user: '/api/user'
         }
@@ -75,7 +75,7 @@ export class Server implements IServer {
         this.app.use(this.paths.auth, require('../routes/auth.routes'));
         this.app.use(this.paths.google, require('../routes/googleSignIn.routes'));
         this.app.use(this.paths.register, require('../routes/newUser.routes'));
-        this.app.use(this.paths.renovarToken, require('../routes/renovarToken.routes'));
+        this.app.use(this.paths.refreshToken, require('../routes/refreshToken.routes'));
         this.app.use(this.paths.logout, require('../routes/logout.routes'));
         this.app.use(this.paths.user, require('../routes/user.routes'));
     }

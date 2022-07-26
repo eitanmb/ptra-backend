@@ -3,7 +3,7 @@ import express from 'express';
 import { generateJWT, verificarToken } from '../helpers/jwt';
 import { findUserByRefreshToken } from '../database/db.operations';
 
-export const renovarToken = async( req:express.Request, res:express.Response ) => {
+export const refreshToken = async( req:express.Request, res:express.Response ) => {
     const cookies = req.cookies;
 
     if(!cookies?.jwt ) {

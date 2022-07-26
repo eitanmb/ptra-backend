@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { renovarToken } from '../controllers/renovarToken.controller';
+import { refreshToken } from '../controllers/refreshToken.controller';
 
 const router = Router();
 
 router.get(
-    '/', renovarToken
+    '/', refreshToken
 );
 
 module.exports = router;

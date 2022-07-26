@@ -6,7 +6,7 @@ export const emailExist = async( email='' ) => {
     
     const existEmail = await User.findOne( { email } );
 
-    if ( !existEmail ) throw new Error('No hay usuario con ese email');
+    // if ( !existEmail ) throw new Error('No hay usuario con ese email'); ESTO ESTÁ MAL IMPLEMENTADO
 
     if( existEmail ) {
 
@@ -78,13 +78,10 @@ export const currentPasswordMatch:CustomValidator = async( currentPassword:strin
     if(!req.params) throw new Error("No existe el parametro de request userId");
 
     const { userId } = req.params;
-
-    //Determinar si el usuario está activo
     const user = await User.findById( userId );
 
     if( !user ) throw new Error("El usuario no existe");
 
-     //verficar si el currentPassword enviado por el usuario a través del formulario
     const validPassword = bcryptjs.compareSync( currentPassword, user.password );
 
     if( !validPassword ) {
