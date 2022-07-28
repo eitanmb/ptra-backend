@@ -14,17 +14,7 @@ import {
     ApolloServerPluginLandingPageLocalDefault,
   } from 'apollo-server-core';
 
-const PORT = process.env.PORT;
-const PTRA_CNN = process.env.PTRA_CNN;
 
-const paths = {
-    auth: '/api/auth',
-    google: '/api/google',
-    register: '/api/new',
-    refreshToken: '/api/refresh',
-    logout: '/api/logout',
-    user: '/api/user'
-  }
 async function startRestGraphQLServer() {
     const app = express();
     const httpServer = http.createServer(app);
@@ -50,6 +40,15 @@ async function startRestGraphQLServer() {
     
     server.applyMiddleware({ app });
 
+    const paths = {
+      auth: '/api/auth',
+      google: '/api/google',
+      register: '/api/new',
+      refreshToken: '/api/refresh',
+      logout: '/api/logout',
+      user: '/api/user'
+    }
+
     app.use(paths.auth, require('./routes/auth.routes'));
     app.use(paths.google, require('./routes/googleSignIn.routes'));
     app.use(paths.register, require('./routes/newUser.routes'));
@@ -57,16 +56,18 @@ async function startRestGraphQLServer() {
     app.use(paths.logout, require('./routes/logout.routes'));
     app.use(paths.user, require('./routes/user.routes'));
 
-
+    const PTRA_CNN = process.env.PTRA_CNN;
+    
     async function ptraConnection() {
-        if (!PTRA_CNN) {
-            process.exit(1);
-        }
-        await dbConnection(PTRA_CNN);
+      if (!PTRA_CNN) {
+        process.exit(1);
+      }
+      await dbConnection(PTRA_CNN);
     }
-
+    
     ptraConnection();
-
+    
+    const PORT = process.env.PORT;
     app.listen(PORT, () => {
         console.log(`Escuchando el puerto ${PORT}`);
     });
