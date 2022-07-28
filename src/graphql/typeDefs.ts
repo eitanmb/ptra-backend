@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+export const typeDefs = gql`
     type Query {
         hello: String
     }

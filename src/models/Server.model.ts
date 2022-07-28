@@ -52,9 +52,9 @@ export class Server implements IServer {
             user: '/api/user'
         }
 
-        this.ptraConnection();
-        this.middlewares();
-        this.routes();
+        // this.ptraConnection();
+        // this.middlewares();
+        // this.routes();
 
     }
 
