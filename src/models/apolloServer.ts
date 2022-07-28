@@ -6,7 +6,6 @@ import {
 } from 'apollo-server-core';
 import express from 'express';
 import http from 'http';
-import { GraphQLDirectiveExtensions, GraphQLSchema } from 'graphql';
 
 export async function startApolloServer(typeDefs: any, resolvers: any) {
   const app = express();
