@@ -2,6 +2,7 @@ import {
     ApolloServerPluginDrainHttpServer,
     ApolloServerPluginLandingPageLocalDefault,
 } from 'apollo-server-core';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -58,14 +59,10 @@ export async function startRestGraphQLServer() {
 
     const PTRA_CNN = process.env.PTRA_CNN;
     
-    async function ptraConnection() {
-      if (!PTRA_CNN) {
+    if (!PTRA_CNN) {
         process.exit(1);
-      }
-      await dbConnection(PTRA_CNN);
     }
-    
-    ptraConnection();
+    await dbConnection(PTRA_CNN);
     
     const PORT = process.env.PORT;
     app.listen(PORT, () => {
