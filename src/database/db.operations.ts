@@ -23,9 +23,8 @@ export const updateUserRefreshToken = async( user: IUser, refreshToken:string ) 
     try {
         await user.save();
     } catch(error) {
-        throw new OperationalErrors('Falló la actualización del usuario');
+        throw new OperationalErrors('Falló la renovación del token');
     }
-
 }
 
 export const findUserByRefreshToken = ( refreshToken:string ) => {
