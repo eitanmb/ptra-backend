@@ -16,7 +16,7 @@ import { resolvers } from './graphql/resolvers';
 import { ApolloServer } from 'apollo-server-express';
 
 
-export async function startRestGraphQLServer() {
+export default async function startRestGraphQLServer() {
     const app = express();
     const httpServer = http.createServer(app);
     const serverGraphQL = new ApolloServer({

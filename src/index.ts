@@ -1,4 +1,4 @@
 require('dotenv').config();
-import { startRestGraphQLServer } from "./servers";
+import startRestGraphQLServer from "./servers";
 
 startRestGraphQLServer();
